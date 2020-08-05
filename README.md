@@ -1,6 +1,6 @@
 # DevOpsProject
 
-Repo is the same as the ones i use for two domains (in production) that runs the same setup:
+Repo is the same as the ones i use for two domains (in production) that runs the same setup(swapped out personal details):
 
 Traefik for managing the TLS/SSL challenge with acme \
 Traefik for reverse proxy for using ports 80 and 443 for more than one service at a time \
