@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+    web:
+        image: nginx:1.19.1-alpine
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+            - "traefik.http.routers.web.middlewares=redirect-to-https"
+            - "traefik.http.routers.web.rule=Host(`example.com`) || Host(`www.example.com`)"
+            - "traefik.http.routers.web.rule=Host(`example.com`) || Host(`www.example.com`)"
+            - "traefik.http.routers.web.entrypoints=web"
+            - "traefik.http.routers.web-secure.rule=Host(`example.com`) || Host(`www.example.com`)"
+            - "traefik.http.routers.web-secure.tls=true"
+            - "traefik.http.routers.web-secure.tls.certresolver=myresolver"
+            - "traefik.docker.network=traefik-proxy"
+        volumes:
+            - files:/var/www/html
+            - ./nginx:/etc/nginx/conf.d
+        networks:
+            - traefik-proxy
+            - bridge
+
+    wordpress:
+        image: wordpress:5.4.2-php7.3-fpm-alpine
+        container_name: wordpress
+        restart: unless-stopped
+        environment:
+            WORDPRESS_DB_HOST: db
+            WORDPRESS_DB_USER: exampleuser
+            WORDPRESS_DB_PASSWORD: examplepass
+            WORDPRESS_DB_NAME: exampledb
+        volumes:
+            - files:/var/www/html
+        networks:
+            - bridge
+
+    db:
+        image: mysql:5.7
+        container_name: db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: exampledb
+            MYSQL_USER: exampleuser
+            MYSQL_PASSWORD: examplepass
+            MYSQL_RANDOM_ROOT_PASSWORD: 'examplepassword'
+        volumes:
+            - db:/var/lib/mysql
+        networks:
+           - bridge
+              
+volumes:
+ files:
+ db:
+
+networks:
+    bridge:
+            driver: bridge
+    traefik-proxy:
+            external: true
