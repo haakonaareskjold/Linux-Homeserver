@@ -1,4 +1,4 @@
-# DevOpsProject
+# NemesisReactor - My local linux server
 
 Repo is the same as the ones i use for two domains (in production) that runs the same setup(swapped out personal details):
 
